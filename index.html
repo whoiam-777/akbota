@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личное Портфолио</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Основные настройки --- */
+        :root {
+            --primary-color: #ffffff;
+            --accent-color: #ffeba7;
+            --text-color: #e0e0e0;
+            --bg-gradient: linear-gradient(135deg, #2b1055 0%, #7597de 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-gradient);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: var(--primary-color);
+        }
+
+        /* Анимированные круги на фоне для атмосферы */
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(to right, #ff5f6d, #ffc371);
+            animation: float 6s ease-in-out infinite;
+            z-index: -1;
+        }
+        .c1 { width: 300px; height: 300px; top: -50px; left: -50px; }
+        .c2 { width: 200px; height: 200px; bottom: 50px; right: -50px; background: linear-gradient(to right, #2193b0, #6dd5ed); animation-delay: 1s; }
+
+        /* --- Карточка (Контейнер) --- */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: 20px;
+            width: 400px;
+            height: 600px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* --- Пустая рамка для фото --- */
+        .photo-frame {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%; /* Круглая рамка */
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            margin: 0 auto 20px;
+            position: relative;
+            overflow: hidden;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Текст внутри рамки (можно убрать, когда вставите фото) */
+        .photo-frame span {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        /* Сюда вы будете вставлять фото через тег <img> */
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none; /* Сейчас скрыто, так как рамка пустая */
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        p.subtitle {
+            font-size: 14px;
+            font-weight: 300;
+            color: var(--accent-color);
+            margin-bottom: 30px;
+        }
+
+        /* --- Вкладки (Табы) --- */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 15px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            color: white;
+        }
+
+        .tab-btn.active {
+            color: white;
+        }
+
+        /* Линия подчеркивания под активной вкладкой */
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width 0.3s ease, left 0.3s ease;
+        }
+
+        .tab-btn.active::after {
+            width: 100%;
+            left: 0;
+        }
+
+        /* --- Контент вкладок --- */
+        .content-section {
+            width: 100%;
+            text-align: left;
+            display: none; /* Скрываем все секции по умолчанию */
+            animation: fadeIn 0.5s ease;
+            height: 250px;
+            overflow-y: auto; /* Прокрутка, если текста много */
+            padding-right: 5px;
+        }
+
+        .content-section.active-content {
+            display: block; /* Показываем активную */
+        }
+
+        .content-section h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 5px;
+        }
+
+        .content-section p, .content-section li {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-color);
+        }
+        
+        ul {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* Полоса прокрутки */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 10px; }
+
+        /* --- Анимации --- */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+
+    <div class="card">
+        <div class="photo-frame">
+            <span>ВАШЕ ФОТО</span>
+            </div>
+
+        <h1>Имя Фамилия</h1>
+        <p class="subtitle">Профессия / Статус</p>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab(event, 'about')">Обо мне</button>
+            <button class="tab-btn" onclick="openTab(event, 'skills')">Навыки</button>
+            <button class="tab-btn" onclick="openTab(event, 'contacts')">Контакты</button>
+        </div>
+
+        <div id="about" class="content-section active-content">
+            <h3>Приветствую!</h3>
+            <p>
+                Здесь вы можете написать краткую биографию. Расскажите о том, кто вы, чем увлекаетесь и к чему стремитесь.
+            </p>
+            <p>
+                Я создаю креативные решения и люблю минимализм. Этот сайт — отражение моего стиля.
+            </p>
+        </div>
+
+        <div id="skills" class="content-section">
+            <h3>Что я умею</h3>
+            <ul>
+                <li>Креативный дизайн и верстка</li>
+                <li>Управление проектами</li>
+                <li>Коммуникабельность и работа в команде</li>
+                <li>Аналитическое мышление</li>
+            </ul>
+        </div>
+
+        <div id="contacts" class="content-section">
+            <h3>Свяжитесь со мной</h3>
+            <p><strong>Email:</strong> email@example.com</p>
+            <p><strong>Телефон:</strong> +7 (999) 000-00-00</p>
+            <p><strong>Telegram:</strong> @username</p>
+            <p style="margin-top: 20px; font-size: 12px; opacity: 0.6;">
+                Я всегда открыт для новых предложений и сотрудничества.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            // 1. Скрываем все секции контента
+            var i, content, tablinks;
+            content = document.getElementsByClassName("content-section");
+            for (i = 0; i < content.length; i++) {
+                content[i].style.display = "none";
+                content[i].classList.remove("active-content");
+            }
+
+            // 2. Убираем класс 'active' со всех кнопок
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+
+            // 3. Показываем текущую секцию и подсвечиваем кнопку
+            document.getElementById(tabName).style.display = "block";
+            // Небольшая задержка для плавности анимации CSS
+            setTimeout(() => {
+                document.getElementById(tabName).classList.add("active-content");
+            }, 10);
+            
+            evt.currentTarget.classList.add("active");
+        }
+    </script>
+</body>
+</html>
