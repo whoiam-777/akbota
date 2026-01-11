@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личное Портфолио</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         /* --- Основные настройки --- */
         :root {
             --primary-color: #ffffff;
             --accent-color: #ffeba7;
             --text-color: #e0e0e0;
+            --tg-color: #0088cc;
             --bg-gradient: linear-gradient(135deg, #2b1055 0%, #7597de 100%);
             --glass-bg: rgba(255, 255, 255, 0.1);
             --glass-border: 1px solid rgba(255, 255, 255, 0.2);
@@ -22,55 +27,56 @@
             padding: 0;
             font-family: 'Montserrat', sans-serif;
             background: var(--bg-gradient);
-            height: 100vh;
+            min-height: 100vh; /* Используем min-height для мобильных */
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            overflow: hidden; /* Скрываем скролл страницы */
             color: var(--primary-color);
+            position: relative;
         }
 
-        /* Анимированные круги на фоне для атмосферы */
+        /* --- Анимированный фон --- */
         .circle {
             position: absolute;
             border-radius: 50%;
             background: linear-gradient(to right, #ff5f6d, #ffc371);
-            animation: float 6s ease-in-out infinite;
+            animation: float 8s ease-in-out infinite;
             z-index: -1;
+            opacity: 0.8;
         }
-        .c1 { width: 300px; height: 300px; top: -50px; left: -50px; }
-        .c2 { width: 200px; height: 200px; bottom: 50px; right: -50px; background: linear-gradient(to right, #2193b0, #6dd5ed); animation-delay: 1s; }
+        .c1 { width: 350px; height: 350px; top: -80px; left: -80px; }
+        .c2 { width: 250px; height: 250px; bottom: 40px; right: -60px; background: linear-gradient(to right, #2193b0, #6dd5ed); animation-delay: 1s; }
+        .c3 { width: 100px; height: 100px; bottom: 50%; left: 10%; background: linear-gradient(to right, #cc2b5e, #753a88); animation: float 10s reverse infinite; opacity: 0.6; }
 
         /* --- Карточка (Контейнер) --- */
         .card {
             background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: var(--glass-border);
             box-shadow: var(--glass-shadow);
             border-radius: 20px;
             width: 400px;
-            height: 600px;
-            padding: 40px;
+            height: 680px; /* Немного увеличили высоту */
+            padding: 40px 30px;
             text-align: center;
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
+            animation: cardEntrance 1s ease-out forwards;
+            /* Чтобы футер был прижат к низу карточки */
+            justify-content: flex-start; 
         }
 
         /* --- Пустая рамка для фото --- */
         .photo-frame {
             width: 140px;
             height: 140px;
-            border-radius: 50%; /* Круглая рамка */
+            border-radius: 50%;
             border: 3px solid rgba(255, 255, 255, 0.5);
-            margin: 0 auto 20px;
+            margin: 0 auto 15px;
             position: relative;
             overflow: hidden;
             background: rgba(0,0,0,0.2);
@@ -78,43 +84,56 @@
             justify-content: center;
             align-items: center;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Текст внутри рамки (можно убрать, когда вставите фото) */
+        .photo-frame:hover {
+            transform: scale(1.05) rotate(2deg);
+            border-color: var(--accent-color);
+        }
+
         .photo-frame span {
-            font-size: 12px;
+            font-size: 10px;
             opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* Сюда вы будете вставлять фото через тег <img> */
+        /* Замените # на путь к картинке */
         .photo-frame img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: none; /* Сейчас скрыто, так как рамка пустая */
+            display: none; 
         }
 
         h1 {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 700;
             margin-bottom: 5px;
             letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         p.subtitle {
             font-size: 14px;
-            font-weight: 300;
+            font-weight: 400;
             color: var(--accent-color);
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         /* --- Вкладки (Табы) --- */
         .tabs {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: 10px;
+            margin-bottom: 20px;
             width: 100%;
+            background: rgba(255,255,255,0.05);
+            padding: 5px;
+            border-radius: 30px;
         }
 
         .tab-btn {
@@ -122,90 +141,190 @@
             border: none;
             color: rgba(255, 255, 255, 0.6);
             font-family: 'Montserrat', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            padding: 8px 15px;
-            position: relative;
+            padding: 10px 20px;
+            border-radius: 25px;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn i {
+            font-size: 14px;
         }
 
         .tab-btn:hover {
             color: white;
+            background: rgba(255,255,255,0.1);
         }
 
         .tab-btn.active {
-            color: white;
-        }
-
-        /* Линия подчеркивания под активной вкладкой */
-        .tab-btn::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 2px;
+            color: #2b1055;
             background: var(--accent-color);
-            transition: width 0.3s ease, left 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        .tab-btn.active::after {
+        /* --- Контент --- */
+        .content-container {
             width: 100%;
-            left: 0;
+            flex-grow: 1; /* Занимает доступное пространство */
+            position: relative;
         }
 
-        /* --- Контент вкладок --- */
         .content-section {
             width: 100%;
             text-align: left;
-            display: none; /* Скрываем все секции по умолчанию */
-            animation: fadeIn 0.5s ease;
-            height: 250px;
-            overflow-y: auto; /* Прокрутка, если текста много */
+            display: none;
+            animation: fadeIn 0.6s ease;
+            height: 220px; /* Фиксированная высота для контента */
+            overflow-y: auto;
             padding-right: 5px;
         }
 
         .content-section.active-content {
-            display: block; /* Показываем активную */
+            display: block;
         }
 
         .content-section h3 {
             font-size: 18px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 5px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .content-section h3 i {
+            color: var(--accent-color);
         }
 
         .content-section p, .content-section li {
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.6;
             color: var(--text-color);
-        }
-        
-        ul {
-            padding-left: 20px;
-        }
-        
-        li {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
-        /* Полоса прокрутки */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: rgba(255,255,255,0.05);
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s;
+        }
+        
+        li:hover {
+            transform: translateX(5px);
+            background: rgba(255,255,255,0.1);
+        }
+        
+        li i {
+            color: var(--accent-color);
+            width: 20px;
+            text-align: center;
+        }
+
+        /* --- Горячая кнопка Telegram --- */
+        .tg-button-container {
+            width: 100%;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .tg-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 15px;
+            text-decoration: none;
+            color: white;
+            background: var(--tg-color);
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: pulseBtn 2s infinite;
+        }
+
+        .tg-btn i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .tg-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 136, 204, 0.6);
+            background: #0099e6;
+        }
+
+        /* Блик на кнопке */
+        .tg-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+        }
+        
+        .tg-btn:hover::after {
+            left: 100%;
+            transition: 0.5s;
+        }
+
+        /* --- Футер --- */
+        .footer-text {
+            font-size: 11px;
+            opacity: 0.5;
+            margin-top: auto; /* Прижимает к низу */
+            border-top: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+            padding-top: 15px;
+        }
+
+        /* --- Скроллбар --- */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 10px; }
 
         /* --- Анимации --- */
         @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
         }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes pulseBtn {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
         }
 
     </style>
@@ -214,75 +333,88 @@
 
     <div class="circle c1"></div>
     <div class="circle c2"></div>
+    <div class="circle c3"></div>
 
     <div class="card">
         <div class="photo-frame">
-            <span>ВАШЕ ФОТО</span>
+            <span>FOTO</span>
             </div>
 
         <h1>Имя Фамилия</h1>
-        <p class="subtitle">Профессия / Статус</p>
+        <p class="subtitle">Creator & Developer</p>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="openTab(event, 'about')">Обо мне</button>
-            <button class="tab-btn" onclick="openTab(event, 'skills')">Навыки</button>
-            <button class="tab-btn" onclick="openTab(event, 'contacts')">Контакты</button>
+            <button class="tab-btn active" onclick="openTab(event, 'about')">
+                <i class="fas fa-user"></i> Инфо
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'skills')">
+                <i class="fas fa-rocket"></i> Навыки
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'contacts')">
+                <i class="fas fa-address-book"></i> Связь
+            </button>
         </div>
 
-        <div id="about" class="content-section active-content">
-            <h3>Приветствую!</h3>
-            <p>
-                Здесь вы можете написать краткую биографию. Расскажите о том, кто вы, чем увлекаетесь и к чему стремитесь.
-            </p>
-            <p>
-                Я создаю креативные решения и люблю минимализм. Этот сайт — отражение моего стиля.
-            </p>
+        <div class="content-container">
+            
+            <div id="about" class="content-section active-content">
+                <h3><i class="fas fa-quote-left"></i> Приветствую!</h3>
+                <p>
+                    Я — человек, увлеченный своим делом. Здесь будет описание вашей биографии, ваших ценностей и целей.
+                </p>
+                <p>
+                    <i class="fas fa-heart" style="color: #ff5f6d; margin-right:5px;"></i> Люблю минимализм, технологии и креативные идеи. Этот сайт создан, чтобы рассказать мою историю.
+                </p>
+            </div>
+
+            <div id="skills" class="content-section">
+                <h3><i class="fas fa-tools"></i> Что я умею</h3>
+                <ul>
+                    <li><i class="fas fa-check"></i> Креативный дизайн</li>
+                    <li><i class="fas fa-code"></i> Веб-разработка</li>
+                    <li><i class="fas fa-users"></i> Менеджмент</li>
+                    <li><i class="fas fa-chart-line"></i> Аналитика</li>
+                </ul>
+            </div>
+
+            <div id="contacts" class="content-section">
+                <h3><i class="fas fa-envelope-open-text"></i> Мои контакты</h3>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> email@example.com</li>
+                    <li><i class="fas fa-phone"></i> +7 (777) 000-00-00</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Астана, Казахстан</li>
+                </ul>
+            </div>
+
         </div>
 
-        <div id="skills" class="content-section">
-            <h3>Что я умею</h3>
-            <ul>
-                <li>Креативный дизайн и верстка</li>
-                <li>Управление проектами</li>
-                <li>Коммуникабельность и работа в команде</li>
-                <li>Аналитическое мышление</li>
-            </ul>
+        <div class="tg-button-container">
+            <a href="https://t.me/akii19" target="_blank" class="tg-btn">
+                <i class="fab fa-telegram-plane"></i> Написать в Telegram
+            </a>
         </div>
 
-        <div id="contacts" class="content-section">
-            <h3>Свяжитесь со мной</h3>
-            <p><strong>Email:</strong> email@example.com</p>
-            <p><strong>Телефон:</strong> +7 (999) 000-00-00</p>
-            <p><strong>Telegram:</strong> @username</p>
-            <p style="margin-top: 20px; font-size: 12px; opacity: 0.6;">
-                Я всегда открыт для новых предложений и сотрудничества.
-            </p>
+        <div class="footer-text">
+            &copy; 2026 Все права защищены. Designed with <i class="fas fa-heart" style="font-size:10px;"></i>
         </div>
     </div>
 
     <script>
         function openTab(evt, tabName) {
-            // 1. Скрываем все секции контента
             var i, content, tablinks;
             content = document.getElementsByClassName("content-section");
             for (i = 0; i < content.length; i++) {
                 content[i].style.display = "none";
                 content[i].classList.remove("active-content");
             }
-
-            // 2. Убираем класс 'active' со всех кнопок
             tablinks = document.getElementsByClassName("tab-btn");
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].classList.remove("active");
             }
-
-            // 3. Показываем текущую секцию и подсвечиваем кнопку
             document.getElementById(tabName).style.display = "block";
-            // Небольшая задержка для плавности анимации CSS
             setTimeout(() => {
                 document.getElementById(tabName).classList.add("active-content");
             }, 10);
-            
             evt.currentTarget.classList.add("active");
         }
     </script>
